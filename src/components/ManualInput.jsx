@@ -1,5 +1,3 @@
-// src/components/ManualInput.jsx
-
 import React, { useState } from 'react';
 import { FaWrench } from 'react-icons/fa';
 
@@ -9,30 +7,25 @@ const ManualInput = ({ onUpdate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!target || !value) {
-      alert('Pilih target dan nilai terlebih dahulu!');
-      return;
-    }
     onUpdate(target, parseInt(value, 10));
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mt-8">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700">
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
         <FaWrench />
         Update Manual
       </h3>
-      {/* Perubahan ada di sini: className diubah menjadi flex-col saja */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label htmlFor="target" className="block text-sm font-medium text-gray-600 mb-1">
+          <label htmlFor="target" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
             Target Komponen
           </label>
           <select
             id="target"
             value={target}
             onChange={(e) => setTarget(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200"
           >
             <option value="remDepan">Rem Depan</option>
             <option value="remBelakang">Rem Belakang</option>
@@ -41,14 +34,14 @@ const ManualInput = ({ onUpdate }) => {
         </div>
 
         <div>
-          <label htmlFor="value" className="block text-sm font-medium text-gray-600 mb-1">
+          <label htmlFor="value" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
             Set Nilai (%)
           </label>
           <select
             id="value"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200"
           >
             <option value="100">100%</option>
             <option value="75">75%</option>
@@ -59,7 +52,7 @@ const ManualInput = ({ onUpdate }) => {
         <div>
           <button
             type="submit"
-            className="w-full bg-slate-800 text-white font-bold py-2.5 px-6 rounded-lg hover:bg-slate-700 transition-colors mt-2"
+            className="w-full bg-slate-800 hover:bg-slate-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg transition-colors mt-2"
           >
             Update
           </button>

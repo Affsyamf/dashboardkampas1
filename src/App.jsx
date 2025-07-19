@@ -4,6 +4,7 @@ import HistoryPanel from './components/HistoryPanel';
 import ManualInput from './components/ManualInput';
 import KetebalanChart from './components/ui/chart';
 import { FaCarSide, FaOilCan } from 'react-icons/fa';
+import { ModeToggle } from './components/ModeToggle';
 
 const statusInfo = {
   100: { status: 'Optimal', color: '#22c55e' },
@@ -110,22 +111,31 @@ function App() {
       }, {})
   );
 
-  return (
-    <div className="min-h-screen bg-slate-100 text-gray-800 font-sans p-4 sm:p-8">
+   return (
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
       <main className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-800 tracking-tight">
-            Dashboard Status Kendaraan
-          </h1>
-          <p className="mt-2 text-lg text-slate-600">
-            Monitor kondisi kampas dan oli rem secara real-time.
-          </p>
-        </div>
+        
+        {/* Header digabung menjadi satu untuk Judul dan Toggle */}
+        <header className="flex justify-between items-start mb-10">
+          <div className='text-left'>
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
+              Dashboard Status Kendaraan
+            </h1>
+            <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
+              Monitor kondisi kampas dan oli rem secara real-time.
+            </p>
+          </div>
+          <ModeToggle />
+        </header>
+
+        {/* Kartu Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           <BrakeCard title="Rem Depan" thickness={data.remDepan} icon={<FaCarSide />} />
           <BrakeCard title="Rem Belakang" thickness={data.remBelakang} icon={<FaCarSide />} />
           <BrakeCard title="Oli Rem" thickness={data.oliRem} icon={<FaOilCan />} />
         </div>
+        
+        {/* Chart dan Input Manual */}
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
           <div className="lg:w-2/3">
             <KetebalanChart data={chartData} />
@@ -134,11 +144,12 @@ function App() {
             <ManualInput onUpdate={handleManualUpdate} />
           </div>
         </div>
+
+        {/* Panel History */}
         <div className="mt-8">
-          {/* --- PERBAIKAN DI SINI --- */}
-          {/* Tambahkan kembali prop onSimulate */}
           <HistoryPanel history={history} onSimulate={simulateChange} />
         </div>
+
       </main>
     </div>
   );

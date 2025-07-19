@@ -9,9 +9,9 @@ const HistoryPanel = ({ history, onSimulate }) => {
   const recentHistory = history.slice(0, 5);
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-700">Aktivitas Terakhir</h3>
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">Aktivitas Terakhir</h3>
         
         {/* Pastikan onClick memanggil 'onSimulate' */}
         <button 
@@ -25,10 +25,10 @@ const HistoryPanel = ({ history, onSimulate }) => {
       <div className="space-y-3">
         {recentHistory.length > 0 ? (
           recentHistory.map((entry, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4" style={{ borderColor: entry.color }}>
+            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border-l-4" style={{ borderColor: entry.color }}>
               <div>
-                <p className="font-semibold text-gray-800">{entry.target}: <span className="font-normal">{entry.status} ({entry.thickness}%)</span></p>
-                <p className="text-sm text-gray-500">
+                <p className="font-semibold text-gray-800 dark:text-gray-100">{entry.target}: <span className="font-normal">{entry.status} ({entry.thickness}%)</span></p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {/* Pastikan timestamp sudah string, karena sudah diproses di App.jsx */}
                   {entry.timestamp}
                 </p>
