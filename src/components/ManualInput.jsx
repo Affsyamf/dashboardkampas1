@@ -1,3 +1,5 @@
+// src/components/ManualInput.jsx
+
 import React, { useState } from 'react';
 import { FaWrench } from 'react-icons/fa';
 
@@ -11,7 +13,6 @@ const ManualInput = ({ onUpdate }) => {
       alert('Pilih target dan nilai terlebih dahulu!');
       return;
     }
-    // Mengirim data ke komponen App
     onUpdate(target, parseInt(value, 10));
   };
 
@@ -21,9 +22,9 @@ const ManualInput = ({ onUpdate }) => {
         <FaWrench />
         Update Manual
       </h3>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-4">
-        {/* Pilihan Target */}
-        <div className="w-full sm:w-1/3">
+      {/* Perubahan ada di sini: className diubah menjadi flex-col saja */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
           <label htmlFor="target" className="block text-sm font-medium text-gray-600 mb-1">
             Target Komponen
           </label>
@@ -39,8 +40,7 @@ const ManualInput = ({ onUpdate }) => {
           </select>
         </div>
 
-        {/* Pilihan Nilai */}
-        <div className="w-full sm:w-1/3">
+        <div>
           <label htmlFor="value" className="block text-sm font-medium text-gray-600 mb-1">
             Set Nilai (%)
           </label>
@@ -56,11 +56,10 @@ const ManualInput = ({ onUpdate }) => {
           </select>
         </div>
 
-        {/* Tombol Submit */}
-        <div className="w-full sm:w-auto pt-2 sm:pt-6">
+        <div>
           <button
             type="submit"
-            className="w-full bg-slate-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-slate-700 transition-colors"
+            className="w-full bg-slate-800 text-white font-bold py-2.5 px-6 rounded-lg hover:bg-slate-700 transition-colors mt-2"
           >
             Update
           </button>
