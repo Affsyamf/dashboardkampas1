@@ -113,8 +113,9 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
-      <main className="max-w-7xl mx-auto">
+    <div className="min-h-screen w-screen overflow-x-hidden px-4 md:px-8 bg-background 
+    text-foreground text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
+      <main className="w-full px-4 sm:px-8 lg:px-16">
         <header className="flex justify-between items-start mb-10">
           <div className='text-left'>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-muted-foreground tracking-tight">
