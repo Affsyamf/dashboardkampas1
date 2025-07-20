@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import BrakeCard from './components/BrakeCard';
 import HistoryPanel from './components/HistoryPanel';
 import ManualInput from './components/ManualInput';
+import WeeklyStats from './components/WeeklyStats';
 import KetebalanChart from './components/ui/chart';
 import { FaCarSide, FaOilCan } from 'react-icons/fa';
 import { ModeToggle } from './components/ModeToggle';
@@ -111,11 +112,9 @@ function App() {
       }, {})
   );
 
-   return (
+  return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
       <main className="max-w-7xl mx-auto">
-        
-        {/* Header digabung menjadi satu untuk Judul dan Toggle */}
         <header className="flex justify-between items-start mb-10">
           <div className='text-left'>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
@@ -128,28 +127,39 @@ function App() {
           <ModeToggle />
         </header>
 
-        {/* Kartu Status */}
+        {/* Kartu Status Tetap di Atas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           <BrakeCard title="Rem Depan" thickness={data.remDepan} icon={<FaCarSide />} />
           <BrakeCard title="Rem Belakang" thickness={data.remBelakang} icon={<FaCarSide />} />
           <BrakeCard title="Oli Rem" thickness={data.oliRem} icon={<FaOilCan />} />
         </div>
         
-        {/* Chart dan Input Manual */}
+        {/* --- PERUBAHAN TATA LETAK DI SINI --- */}
+
+        {/* Baris 1: Grafik dan Statistik Mingguan */}
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
+          {/* Kolom Kiri untuk Grafik */}
           <div className="lg:w-2/3">
             <KetebalanChart data={chartData} />
           </div>
+          {/* Kolom Kanan untuk Statistik */}
+          <div className="lg:w-1/3">
+            <WeeklyStats />
+          </div>
+        </div>
+
+        {/* Baris 2: Aktivitas Terakhir dan Update Manual */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Kolom Kiri untuk Aktivitas Terakhir */}
+          <div className="lg:w-2/3">
+            <HistoryPanel history={history} onSimulate={simulateChange} />
+          </div>
+          {/* Kolom Kanan untuk Update Manual */}
           <div className="lg:w-1/3">
             <ManualInput onUpdate={handleManualUpdate} />
           </div>
         </div>
-
-        {/* Panel History */}
-        <div className="mt-8">
-          <HistoryPanel history={history} onSimulate={simulateChange} />
-        </div>
-
+        
       </main>
     </div>
   );
