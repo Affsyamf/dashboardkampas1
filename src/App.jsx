@@ -113,14 +113,14 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
       <main className="max-w-7xl mx-auto">
         <header className="flex justify-between items-start mb-10">
           <div className='text-left'>
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-muted-foreground tracking-tight">
               Dashboard Status Kendaraan
             </h1>
-            <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-lg text-muted-foreground">
               Monitor kondisi kampas dan oli rem secara real-time.
             </p>
           </div>
