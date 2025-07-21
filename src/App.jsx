@@ -4,6 +4,7 @@ import HistoryPanel from './components/HistoryPanel';
 import ManualInput from './components/ManualInput';
 import WeeklyStats from './components/WeeklyStats';
 import KetebalanChart from './components/ui/chart';
+import PredictionCard from './components/PredictionCard';
 import { FaCarSide, FaOilCan } from 'react-icons/fa';
 import { ModeToggle } from './components/ModeToggle';
 
@@ -18,14 +19,28 @@ const API_URL = 'http://localhost:3001';
 function App() {
   const [data, setData] = useState({ remDepan: 0, remBelakang: 0, oliRem: 0 });
   const [history, setHistory] = useState([]);
+  const [predictions, setPredictions] = useState({
+    'rem-depan': '',
+    'rem-belakang': '',
+    'oli-rem': '',
+  });
+  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
-      const [depanRes, belakangRes, oliRes, historyRes] = await Promise.all([
+      // Set loading true di awal fetch
+      setLoading(true);
+      const [
+        depanRes, belakangRes, oliRes, historyRes,
+        predDepanRes, predBelakangRes, predOliRes
+      ] = await Promise.all([
         fetch(`${API_URL}/api/status/rem-depan`),
         fetch(`${API_URL}/api/status/rem-belakang`),
         fetch(`${API_URL}/api/status/oli`),
-        fetch(`${API_URL}/api/history`)
+        fetch(`${API_URL}/api/history`),
+        fetch(`${API_URL}/api/prediction/rem-depan`),
+        fetch(`${API_URL}/api/prediction/rem-belakang`),
+        fetch(`${API_URL}/api/prediction/oli-rem`),
       ]);
 
       const depanData = await depanRes.json();
@@ -46,8 +61,21 @@ function App() {
       }));
       setHistory(processedHistory);
 
+      const predDepanData = await predDepanRes.json();
+      const predBelakangData = await predBelakangRes.json();
+      const predOliData = await predOliRes.json();
+
+      setPredictions({
+        'rem-depan': predDepanData.prediction,
+        'rem-belakang': predBelakangData.prediction,
+        'oli-rem': predOliData.prediction,
+      });
+
     } catch (error) {
       console.error("Gagal mengambil data dari server:", error);
+    } finally {
+      // Set loading false setelah semua fetch selesai
+      setLoading(false);
     }
   };
 
@@ -62,7 +90,6 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ target, value }),
       });
-      // Selalu panggil ulang fetchData sebagai satu-satunya sumber kebenaran
       fetchData();
     } catch (error) {
       console.error("Gagal mengirim update ke server:", error);
@@ -86,39 +113,29 @@ function App() {
     await handleManualUpdate(targetInfo.key, nextValue);
   };
 
-  // --- LOGIKA CHART DIPERBAIKI TOTAL ---
   const chartData = Object.values(
     history
       .slice()
       .reverse()
       .reduce((acc, item) => {
-        // Buat key timestamp yang konsisten (misal: "14:51")
         const timeKey = new Date(item.timestamp).toLocaleTimeString('id-ID', {
           hour: '2-digit',
           minute: '2-digit'
         });
-
-        // Jika waktu ini belum ada di akumulator, buat entri baru
         if (!acc[timeKey]) {
-          acc[timeKey] = {
-            timestamp: timeKey
-          };
+          acc[timeKey] = { timestamp: timeKey };
         }
-
-        // Tambahkan data ketebalan ke waktu yang sesuai
         acc[timeKey][item.target] = item.ketebalan;
-
         return acc;
       }, {})
   );
 
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden px-4 md:px-8 bg-background 
-    text-foreground text-gray-800 dark:text-gray-200 font-sans p-4 sm:p-8 transition-colors duration-300">
-      <main className="w-full px-4 sm:px-8 lg:px-16">
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground font-sans p-4 sm:p-8 transition-colors duration-300">
+      <main className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <header className="flex justify-between items-start mb-10">
           <div className='text-left'>
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-muted-foreground tracking-tight">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight">
               Dashboard Status Kendaraan
             </h1>
             <p className="mt-2 text-lg text-muted-foreground">
@@ -128,34 +145,31 @@ function App() {
           <ModeToggle />
         </header>
 
-        {/* Kartu Status Tetap di Atas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-4">
           <BrakeCard title="Rem Depan" thickness={data.remDepan} icon={<FaCarSide />} />
           <BrakeCard title="Rem Belakang" thickness={data.remBelakang} icon={<FaCarSide />} />
           <BrakeCard title="Oli Rem" thickness={data.oliRem} icon={<FaOilCan />} />
         </div>
-        
-        {/* --- PERUBAHAN TATA LETAK DI SINI --- */}
 
-        {/* Baris 1: Grafik dan Statistik Mingguan */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <PredictionCard title="Rem Depan" prediction={predictions['rem-depan']} loading={loading} />
+          <PredictionCard title="Rem Belakang" prediction={predictions['rem-belakang']} loading={loading} />
+          <PredictionCard title="Oli Rem" prediction={predictions['oli-rem']} loading={loading} />
+        </div>
+        
         <div className="flex flex-col lg:flex-row gap-8 mb-8">
-          {/* Kolom Kiri untuk Grafik */}
           <div className="lg:w-2/3">
             <KetebalanChart data={chartData} />
           </div>
-          {/* Kolom Kanan untuk Statistik */}
           <div className="lg:w-1/3">
             <WeeklyStats />
           </div>
         </div>
 
-        {/* Baris 2: Aktivitas Terakhir dan Update Manual */}
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Kolom Kiri untuk Aktivitas Terakhir */}
           <div className="lg:w-2/3">
             <HistoryPanel history={history} onSimulate={simulateChange} />
           </div>
-          {/* Kolom Kanan untuk Update Manual */}
           <div className="lg:w-1/3">
             <ManualInput onUpdate={handleManualUpdate} />
           </div>

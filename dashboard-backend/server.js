@@ -192,6 +192,78 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
+// Endpoint untuk PREDIKSI PENGGANTIAN
+app.get('/api/prediction/:componentName', async (req, res) => {
+  const { componentName } = req.params;
+
+  let tableName;
+  switch (componentName) {
+    case 'rem-depan':
+      tableName = 'kampas_rem_depan';
+      break;
+    case 'rem-belakang':
+      tableName = 'kampas_rem_belakang';
+      break;
+    case 'oli-rem':
+      tableName = 'level_oli';
+      break;
+    default:
+      return res.status(400).json({ message: 'Nama komponen tidak valid' });
+  }
+
+  try {
+    const sql = `SELECT ketebalan, timestamp FROM ?? ORDER BY timestamp ASC`;
+    const [rows] = await dbPool.query(sql, [tableName]);
+
+    if (rows.length < 2) {
+      return res.json({ prediction: 'Data tidak cukup untuk prediksi' });
+    }
+
+    // Ambil data terbaru dan terlama
+    const latestReading = rows[rows.length - 1];
+    const firstReading = rows[0];
+
+    // Hitung selisih waktu dalam hari
+    const timeDiff = new Date(latestReading.timestamp) - new Date(firstReading.timestamp);
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+
+    // Hitung total keausan
+    const wearDiff = firstReading.ketebalan - latestReading.ketebalan;
+
+    // Jika tidak ada perbedaan hari atau tidak ada keausan, anggap stabil
+    if (daysDiff < 1 || wearDiff <= 0) {
+      return res.json({ prediction: 'Kondisi Stabil' });
+    }
+
+    // Hitung laju keausan per hari
+    const dailyWearRate = wearDiff / daysDiff;
+
+    // Hitung sisa ketebalan sebelum mencapai batas bahaya (50%)
+    const remainingWear = latestReading.ketebalan - 50;
+    if (remainingWear <= 0) {
+      return res.json({ prediction: 'Segera Ganti!' });
+    }
+
+    // Hitung sisa hari
+    const daysLeft = Math.floor(remainingWear / dailyWearRate);
+
+    // Hitung tanggal prediksi
+    const predictionDate = new Date();
+    predictionDate.setDate(predictionDate.getDate() + daysLeft);
+    const formattedDate = predictionDate.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+
+    res.json({ prediction: `~ ${formattedDate}` });
+
+  } catch (error) {
+    console.error(`Error saat prediksi ${componentName}:`, error);
+    res.status(500).json({ message: 'Gagal membuat prediksi' });
+  }
+});
+
 // 6. Jalankan Server
 app.listen(PORT, () => {
   console.log(`🚀 Server backend berjalan di http://localhost:${PORT}`);
