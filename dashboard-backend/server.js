@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise'; // <-- Hapus / di akhir baris
+require('dotenv').config(); 
 
 // 2. Inisialisasi aplikasi Express
 const app = express();
@@ -13,10 +14,10 @@ app.use(express.json()); // Memungkinkan server membaca body request dalam forma
 // 4. Konfigurasi Koneksi Database
 // Ganti nilai di bawah ini dengan informasi database Anda sendiri!
 const dbPool = mysql.createPool({
-  host: 'localhost',         // atau alamat IP server database Anda
-  user: 'root',              // username database Anda
-  password: '',          // password database Anda
-  database: 'dashboardkampas1' // nama database Anda
+  host: process.env.DB_HOST,         // atau alamat IP server database Anda
+  user: process.env.DB_USER,             // username database Anda
+  password: process.env.DB_PASSWORD,          // password database Anda
+  database: process.env.DB_NAME // nama database Anda
 });
 
 // 5. Buat Endpoint API
