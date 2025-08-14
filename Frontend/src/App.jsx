@@ -14,7 +14,7 @@ const statusInfo = {
   50: { status: 'Tindakan Segera', color: '#ef4444' },
 };
 
-const API_URL = 'http://localhost:3001';
+const API_URL = 'import.meta.env.VITE_API_URL;';
 
 function App() {
   const [data, setData] = useState({ remDepan: 0, remBelakang: 0, oliRem: 0 });
